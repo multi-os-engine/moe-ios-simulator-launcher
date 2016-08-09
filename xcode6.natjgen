@@ -1,0 +1,43 @@
+{
+  "platform": "OS X",
+  "package-base": "mac.devtools.xcode6",
+  "base-sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk",
+  "header-search-paths": [
+    "${PROJECT}/src/main/native/headers/Xcode6"
+  ],
+  "user-header-search-paths": [
+    "${PROJECT}/src/main/native/headers/Xcode6"
+  ],
+  "framework-search-paths": [],
+  "source": "#import \u003cFoundation/Foundation.h\u003e\n#import \u003cCoreSimulator.h\u003e\n#import \u003cDVTiPhoneSimulatorRemoteClient.h\u003e\n",
+  "output": "src/main/java",
+  "docsets": [],
+  "unit-rules": [
+    {
+      "final": false,
+      "conditions": [
+        {
+          "condition": "path-prefix",
+          "value": "${SDK}"
+        }
+      ],
+      "actions": [
+        {
+          "action": "replace-package-base",
+          "value": "mac"
+        },
+        {
+          "action": "handling-mode",
+          "value": "external"
+        }
+      ]
+    }
+  ],
+  "logs-path": "${PROJECT}/logs/natjgen/${DATETIME}.html",
+  "type-config-output": "configs/xcode6/out.ngtconf",
+  "type-config-clean-output": false,
+  "header-file-resolving-paths": [
+    "${SDK}/usr/include",
+    "${SDK}/System/Library/Frameworks"
+  ]
+}
