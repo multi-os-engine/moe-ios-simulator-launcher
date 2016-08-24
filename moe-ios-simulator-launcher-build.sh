@@ -2,7 +2,9 @@
 
 #
 # BUILD moe.ios.simulator.launcher PROJECT
-# 
+#
+
+set -e
 
 qualifier="$1"
 build_number="$2"
@@ -17,4 +19,6 @@ export PUBLISH_TARGET_REPO_ADDR=$target_repo
 export PUBLISH_TARGET_REPO_USER=$repo_user
 export PUBLISH_TARGET_REPO_PASS=$repo_pass
 
-./gradlew clean build dependencies publish -Pmoe.publish.qualifier=$qualifier
+xcodebuild -project simlauncher.xcodeproj -target simlauncher -configuration Release
+mkdir -p "$target_repo/other"
+cp build/Release/simlauncher "$target_repo/other/simlauncher"
