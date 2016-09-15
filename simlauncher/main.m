@@ -96,6 +96,7 @@ NSFileHandle *moe_mkfifo(NSString *path, FILE *outFile) {
         NSString *msg = [[NSString alloc] initWithData:data
                                               encoding:NSUTF8StringEncoding];
         fprintf(outFile, "%s", msg.UTF8String);
+        fflush(outFile);
     }];
     return fh;
 }
