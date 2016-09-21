@@ -59,10 +59,10 @@ void moe_init_devtools() {
     });
 }
 
-void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
+NSString* moe_get_xcode_contents_path() {
     static NSString *xccontents;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    dispatch_once(&onceToken, ^{ @autoreleasepool {
         // Create xcode-select -p task
         NSTask *task = [[NSTask alloc] init];
         task.launchPath = @"/usr/bin/xcode-select";
@@ -113,8 +113,12 @@ void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
         xccontents = [[outputBuffer stringByTrimmingCharactersInSet:
                        [NSCharacterSet whitespaceAndNewlineCharacterSet]]
                       stringByDeletingLastPathComponent];
-    });
-    NSString *path = [xccontents stringByAppendingPathComponent:subpath];
+    } });
+    return xccontents;
+}
+
+void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
+    NSString *path = [moe_get_xcode_contents_path() stringByAppendingPathComponent:subpath];
     void* fw = dlopen(path.UTF8String, RTLD_NOW | RTLD_GLOBAL);
     if (!fw) {
         NSLog(@"ERROR: %s", dlerror());

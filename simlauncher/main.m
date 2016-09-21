@@ -203,7 +203,9 @@ void moe_main(Config *config) {
 
     // Enter main loop
     while (!moe_should_terminate) {
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        @autoreleasepool {
+            [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        }
     }
     
     // Kill the launched app
