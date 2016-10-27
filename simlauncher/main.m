@@ -52,7 +52,24 @@ int main(int argc, const char * argv[]) {
 }
 
 MOESimDevice *getSimDevice(NSUUID *udid) {
-    NSArray<MOESimDevice *>* devices = [[MOESimDeviceSet defaultSet] devices];
+    MOESimDeviceSet *deviceSet;
+    if ([NSClassFromString(@"SimServiceContext") respondsToSelector:@selector(sharedServiceContextForDeveloperDir:error:)]) {
+        NSError *error;
+        MOEDVTFilePath *dvtPath = [[MOEDVTDeveloperPaths defaultPaths] developerDirectory];
+        MOESimServiceContext *ctx = [MOESimServiceContext sharedServiceContextForDeveloperDir:dvtPath.pathString error:&error];
+        if (ctx == nil) {
+            NSLog(@"[FATAL] Failed to get simulator service context. %@", error);
+            return nil;
+        }
+        deviceSet = [ctx defaultDeviceSetWithError:&error];
+        if (error != nil) {
+            NSLog(@"[FATAL] Failed to get default device set. %@", error);
+            return nil;
+        }
+    } else {
+        deviceSet = [MOESimDeviceSet defaultSet];
+    }
+    NSArray<MOESimDevice *>* devices = [deviceSet devices];
     __block MOESimDevice *result;
     [devices enumerateObjectsUsingBlock:^(MOESimDevice * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([[obj UDID] isEqualTo:udid]) {

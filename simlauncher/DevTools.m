@@ -144,11 +144,12 @@ return [__name alloc]; \
 @end
 
 @implementation DT_BRIDGE(SimServiceContext)
-
 + (MOESimServiceContext *)sharedServiceContext {
     return [SimServiceContext sharedServiceContext];
 }
-
++ (MOESimServiceContext *)sharedServiceContextForDeveloperDir:(NSString *)dir error:(NSError * __autoreleasing *)error {
+    return [SimServiceContext sharedServiceContextForDeveloperDir:dir error:error];
+}
 @end
 
 @implementation DT_BRIDGE(SimDeviceSet)
@@ -188,6 +189,9 @@ return [__name alloc]; \
 @implementation DT_BRIDGE(DVTDeveloperPaths)
 + (void)initializeApplicationDirectoryName:(NSString *)name {
     return [DVTDeveloperPaths initializeApplicationDirectoryName:name];
+}
++ (instancetype)defaultPaths {
+    return [DVTDeveloperPaths defaultPaths];
 }
 @end
 

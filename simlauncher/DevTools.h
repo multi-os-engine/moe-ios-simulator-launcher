@@ -19,6 +19,7 @@
 #define DT_INTERFACE(__name) MOE ## __name
 
 @class MOESimDevice;
+@class MOESimDeviceSet;
 @class MOEDVTFilePath;
 @class MOEDVTFuture;
 @class MOESimRuntime;
@@ -28,6 +29,8 @@
 
 @interface DT_INTERFACE(SimServiceContext) : NSObject
 + (MOESimServiceContext *)sharedServiceContext;
++ (MOESimServiceContext *)sharedServiceContextForDeveloperDir:(NSString *)dir error:(NSError * __autoreleasing *)error;
+- (MOESimDeviceSet *)defaultDeviceSetWithError:(NSError * __autoreleasing *)error;
 @end
 
 @interface DT_INTERFACE(SimDeviceSet) : NSObject
@@ -75,10 +78,13 @@ typedef NS_ENUM(NSUInteger, MOESimDeviceState) {
 
 @interface DT_INTERFACE(DVTDeveloperPaths) : NSObject
 + (void)initializeApplicationDirectoryName:(NSString *)name;
++ (instancetype)defaultPaths;
+- (MOEDVTFilePath *)developerDirectory;
 @end
 
 @interface DT_INTERFACE(DVTFilePath) : NSObject
 + (MOEDVTFilePath *)filePathForPathString:(NSString *)path;
+- (NSString *)pathString;
 @end
 
 @interface DT_INTERFACE(DVTFuture) : NSObject
