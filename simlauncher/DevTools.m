@@ -120,9 +120,14 @@ NSString* moe_get_xcode_contents_path() {
 
 void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
     NSString *path = [moe_get_xcode_contents_path() stringByAppendingPathComponent:subpath];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSLog(@"WARNING: Bundle is not present at path: %@", path);
+        return nil;
+    }
     void* fw = dlopen(path.UTF8String, RTLD_NOW | RTLD_GLOBAL);
     if (!fw) {
-        NSLog(@"WARNING: %s", dlerror());
+        NSLog(@"ERROR: %s", dlerror());
+        abort();
     }
     return fw;
 }
