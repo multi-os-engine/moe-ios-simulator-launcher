@@ -38,6 +38,7 @@ void moe_init_devtools() {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         void *dvtfoundation = moe_load_devtools_bundle(@"SharedFrameworks/DVTFoundation.framework/DVTFoundation");
+        moe_load_devtools_bundle(@"SharedFrameworks/DVTDeviceFoundation.framework/DVTDeviceFoundation");
         moe_load_devtools_bundle(@"SharedFrameworks/DTDeviceKitBase.framework/DTDeviceKitBase");
         moe_load_devtools_bundle(@"SharedFrameworks/DVTiPhoneSimulatorRemoteClient.framework/DVTiPhoneSimulatorRemoteClient");
         moe_load_devtools_bundle(@"Developer/Library/PrivateFrameworks/CoreSimulator.framework/CoreSimulator");
@@ -121,8 +122,7 @@ void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
     NSString *path = [moe_get_xcode_contents_path() stringByAppendingPathComponent:subpath];
     void* fw = dlopen(path.UTF8String, RTLD_NOW | RTLD_GLOBAL);
     if (!fw) {
-        NSLog(@"ERROR: %s", dlerror());
-        abort();
+        NSLog(@"WARNING: %s", dlerror());
     }
     return fw;
 }
