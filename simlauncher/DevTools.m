@@ -41,7 +41,7 @@ void moe_init_devtools() {
         moe_load_devtools_bundle(@"SharedFrameworks/DVTDeviceFoundation.framework/DVTDeviceFoundation");
         moe_load_devtools_bundle(@"SharedFrameworks/DTDeviceKitBase.framework/DTDeviceKitBase");
         moe_load_devtools_bundle(@"SharedFrameworks/DVTiPhoneSimulatorRemoteClient.framework/DVTiPhoneSimulatorRemoteClient");
-        moe_load_devtools_bundle(@"Developer/Library/PrivateFrameworks/CoreSimulator.framework/CoreSimulator");
+        moe_load_devtools_bundle(@"Developer/Library/PrivateFrameworks/SimulatorKit.framework/SimulatorKit");
 
         DTiPhoneSimulatorSession = NSClassFromString(@"DTiPhoneSimulatorSession");
         SimServiceContext = NSClassFromString(@"SimServiceContext");

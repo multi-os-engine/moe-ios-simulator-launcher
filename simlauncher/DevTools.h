@@ -53,6 +53,7 @@ typedef NS_ENUM(NSUInteger, MOESimDeviceState) {
 - (NSString *)stateString;
 - (MOESimDeviceState)state;
 - (MOESimRuntime *)runtime;
+- (BOOL)bootWithOptions:(id)arg1 error:(id *)arg2;
 @end
 
 @interface DT_INTERFACE(SimRuntime) : NSObject

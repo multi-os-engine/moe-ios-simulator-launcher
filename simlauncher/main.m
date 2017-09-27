@@ -167,6 +167,10 @@ void moe_main(Config *config) {
                 [obj activateWithOptions:NSApplicationActivateIgnoringOtherApps];
             }];
         }
+        
+        if ([device state] != MOESimDeviceStateBooted) {
+            [device bootWithOptions:nil error:nil];
+        }
 
         // Wait for booted state
         NSDate *waitLimit = [NSDate dateWithTimeIntervalSinceNow:120.0];
