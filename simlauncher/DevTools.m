@@ -33,6 +33,11 @@ Class DVTFilePath;
 Class DVTFuture;
 
 void* moe_load_devtools_bundle(NSString * _Nonnull subpath);
+void* moe_load_bundle(NSString * _Nonnull path);
+BOOL isXcode9OrGreater();
+NSDecimalNumber* xcodeVersionNumber();
+NSString* readValueForKeyFromPlistAtPath(NSString * key, NSString * plistPath);
+NSString* xcodeInfoPlistPath();
 
 void moe_init_devtools() {
     static dispatch_once_t onceToken;
@@ -41,7 +46,11 @@ void moe_init_devtools() {
         moe_load_devtools_bundle(@"SharedFrameworks/DVTDeviceFoundation.framework/DVTDeviceFoundation");
         moe_load_devtools_bundle(@"SharedFrameworks/DTDeviceKitBase.framework/DTDeviceKitBase");
         moe_load_devtools_bundle(@"SharedFrameworks/DVTiPhoneSimulatorRemoteClient.framework/DVTiPhoneSimulatorRemoteClient");
-        moe_load_devtools_bundle(@"Developer/Library/PrivateFrameworks/SimulatorKit.framework/SimulatorKit");
+        if (isXcode9OrGreater()) {
+            moe_load_bundle(@"/Library/Developer/PrivateFrameworks/CoreSimulator.framework/CoreSimulator");
+        } else {
+            moe_load_devtools_bundle(@"Developer/Library/PrivateFrameworks/CoreSimulator.framework/CoreSimulator");
+        }
 
         DTiPhoneSimulatorSession = NSClassFromString(@"DTiPhoneSimulatorSession");
         SimServiceContext = NSClassFromString(@"SimServiceContext");
@@ -130,6 +139,47 @@ void* moe_load_devtools_bundle(NSString * _Nonnull subpath) {
         abort();
     }
     return fw;
+}
+
+void* moe_load_bundle(NSString * _Nonnull path) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSLog(@"WARNING: Bundle is not present at path: %@", path);
+        return nil;
+    }
+    void* fw = dlopen(path.UTF8String, RTLD_NOW | RTLD_GLOBAL);
+    if (!fw) {
+        NSLog(@"ERROR: %s", dlerror());
+        abort();
+    }
+    return fw;
+}
+
+BOOL isXcode9OrGreater() {
+    return [xcodeVersionNumber() compare:[NSDecimalNumber decimalNumberWithString:@"9.0"]] != NSOrderedAscending;
+}
+
+NSDecimalNumber* xcodeVersionNumber() {
+    static dispatch_once_t onceToken;
+    static NSDecimalNumber *versionNumber;
+    dispatch_once(&onceToken, ^{
+        NSString* versionNumberString = readValueForKeyFromPlistAtPath(@"CFBundleShortVersionString", xcodeInfoPlistPath());
+        versionNumber = [NSDecimalNumber decimalNumberWithString:versionNumberString];
+    });
+    return versionNumber;
+}
+
+NSString* readValueForKeyFromPlistAtPath(NSString * key, NSString * plistPath) {
+    NSCAssert([NSFileManager.defaultManager fileExistsAtPath:plistPath], @"plist does not exist at path '%@'", plistPath);
+    NSDictionary *infoPlist = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    NSCAssert(infoPlist, @"Could not read plist at '%@'", plistPath);
+    id value = infoPlist[key];
+    NSCAssert(value, @"'%@' does not exist in plist '%@'", key, infoPlist.allKeys);
+    return value;
+}
+
+NSString* xcodeInfoPlistPath() {
+    return [moe_get_xcode_contents_path()
+            stringByAppendingPathComponent:@"Info.plist"];
 }
 
 #define DT_BRIDGE(__name) MOE ## __name \
