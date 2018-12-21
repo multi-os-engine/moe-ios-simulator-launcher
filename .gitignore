@@ -1,3 +1,6 @@
 build
 simlauncher.xcodeproj/xcuserdata
 simlauncher.xcodeproj/project.xcworkspace/xcuserdata
+.settings
+.classpath
+.project
